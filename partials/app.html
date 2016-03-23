@@ -1,0 +1,53 @@
+<nav class="navbar navbar-full navbar-dark bg-inverse">
+	<a class="navbar-brand" href="#">To Do App</a>
+	<span>
+        <form class="form-inline pull-xs-right" *ngIf="!authData">
+            Welcome, Guest
+            <input class="btn btn-primary-outline" type="button" (click)="loginWith('google')" value="login using google">
+        </form>
+        <form class="form-inline pull-xs-right" *ngIf="authData">
+            Welcome, {{authData.google.displayName}}
+            <input class="btn btn-danger-outline" type="button" (click)="logOut()" value="LogOut">
+        </form>    
+    </span>
+</nav>
+	<br/>
+<input type=text [(ngModel)]="taskListName" size="30" placeholder="task List Name">
+<input type=text [(ngModel)]="taskListDesc" size="30" placeholder="task List Description">
+<button (click)="addTaskList(1);">Add Private task List</button>
+<button (click)="addTaskList(0);">Add Public task List</button>
+<div class="row">
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-12" *ngIf="getKeys(1).length">
+				<h3>Private Task Lists</h3>
+				<div class="list-group">
+				  <a href class="list-group-item" *ngFor="#todoListIdskey of getKeys(1)">
+				    <h4 class="list-group-item-heading">
+				    	{{privateTaskLists[todoListIdskey].listName}}
+				    </h4>
+				    <p class="list-group-item-text">
+				    	{{privateTaskLists[todoListIdskey].listDesc}}
+				    </p>
+				  </a>
+				</div>
+			</div>
+			<div class="col-md-12" *ngIf="getKeys(0).length">
+				<h3>Public Task Lists</h3>
+				<div class="list-group">
+				  <a href class="list-group-item" *ngFor="#todoListIdskey of getKeys(0)">
+				    <h4 class="list-group-item-heading">
+				    	{{publicTaskLists[todoListIdskey].listName}}
+				    </h4>
+				    <p class="list-group-item-text">
+				    	{{publicTaskLists[todoListIdskey].listDesc}}
+				    </p>
+				  </a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		
+	</div>
+</div>
