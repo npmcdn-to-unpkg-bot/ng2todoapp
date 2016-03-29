@@ -1,9 +1,102 @@
 $font-stack:    Helvetica, sans-serif;
 $primary-color: #333;
-
+$transDur:0.4s;
 $smpx : 10px;
-
+@mixin transition($transition...) {
+    -moz-transition:    $transition;
+    -o-transition:      $transition;
+    -webkit-transition: $transition;
+    transition:         $transition;
+}
 body {
   font-family: $font-stack;
   color: $primary-color;
+}
+.clickable{
+	cursor: pointer;
+	color:#333;
+	background-color: #FFF;
+	@include transition(background-color $transDur,color $transDur);
+}
+
+.clickable:hover{
+	color:#FFF;
+	background-color: #333;
+	@include transition(background-color $transDur,color $transDur);
+}
+.shareBtn{
+	color:#888;
+	cursor: pointer;
+	@include transition(background-color $transDur,color $transDur);
+}
+.shareBtn:hover{
+	color:#333;
+	@include transition(background-color $transDur,color $transDur);
+}
+.pkeydisp{
+	font-family: monospace;
+}
+.userProfilePic{
+	height: 2.5rem;
+	width: auto;
+}
+/*For adding public keys*/
+#addPublicKeyContainer{
+	display: none;
+}
+
+/*For adjusting checkbox regeion*/
+li[id^="addtask"]{
+	display: none;
+	list-style-type: none;
+}
+.taskRow{
+	display: inline-block;
+	margin-bottom: 0px;
+	padding: .75rem 1.25rem;
+}
+.customtodoCheck > .list-group-item{
+	padding: 0px;
+	position: relative;
+}
+.customtodoCheck .c-input.c-checkbox{
+	@extend .taskRow;
+	width: 100%;
+}
+.customtodoCheck  .c-indicator{
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+}
+.customtodoCheck .c-text{
+	display: inline-block;
+	vertical-align: middle;
+	padding-left: .5rem;
+}
+
+/*Task buttons*/
+.taskbtnContainer{
+	@extend .taskRow;
+	visibility:hidden;
+	position: absolute;
+	right: 0;
+	top:0;
+	z-index: 1;
+}
+.taskbtn{
+	padding:0px 7px;
+	color:#888;
+}
+.taskbtn:hover{
+	color:#222;
+}
+.customtodoCheck >li:hover > .taskbtnContainer{
+	visibility:visible;
+}
+
+/**/
+.card.taskList{
+	min-height: 200px;
+	box-shadow: 2px 2px 5px #888888;
+	margin: 5px;
 }

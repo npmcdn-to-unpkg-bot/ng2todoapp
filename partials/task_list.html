@@ -1,0 +1,54 @@
+<div class="card-block">
+    <h4 class="card-title">
+	<span class="btn-group">
+	  <span type="button" class="taskbtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <span class="sr-only">Toggle Dropdown</span>
+	    <i class="fa fa-ellipsis-v"></i>
+	  </span>
+	  <div class="dropdown-menu">
+	    <div class="dropdown-item clickable" (click)="askForNewTask()"> <i class="fa fa-plus"></i> Add a task</div>
+	    <div class="dropdown-item clickable" (click)="delegateEditTL()"> <i class="fa fa-pencil"></i> Edit</div>
+	    <div class="dropdown-divider"></div>
+	    <div class="dropdown-item clickable" (click)="deleteTaskList()"> <i class="fa fa-trash-o"></i> Delete this list</div>
+	  </div>
+	</span>
+		{{unitTL.listName}}
+    </h4>
+    <h6 class="card-subtitle text-muted">{{unitTL.listDesc}}</h6>
+	<!-- Split button -->
+
+</div>
+<ul class="list-group list-group-flush customtodoCheck">
+	<li class="list-group-item" id="addtask{{unitTL.key}}">
+		<form class="form-inline">
+			<div class="input-group">
+		      <input type="text" [(ngModel)]="unitTL.tempTask" required class="form-control" placeholder="Enter task">
+		      <span class="input-group-btn">
+		        <button type="submit" class="btn btn-success-outline" (click)="addTask()"><i class="fa fa-check"></i></button>
+		      </span>
+		      <span class="input-group-btn">
+		        <button type="button" class="btn btn-danger-outline" (click)="dismissNewTask()"><i class="fa fa-times"></i></button>
+		      </span>
+		    </div>
+		</form>
+	</li>
+    <li class="list-group-item unitTask" *ngFor="#tkey of unitTL.tasksKeys">
+    	<label class="c-input c-checkbox" >
+			 <input type="checkbox" [ngModel]="unitTL.tasks[tkey].isDone" (ngModelChange)="updateTaskStatus(tkey,$event);">
+			 <span class="c-indicator"></span>
+			 <span class="c-text">{{unitTL.tasks[tkey].task}}</span>
+			 						 
+		</label>
+		<span class="taskbtnContainer">
+			<span class="taskbtn pull-xs-right" (click)="deleteTask(tkey)">
+			 	<i class="fa fa-trash"></i>
+			 </span>	
+		</span>
+    </li>
+    <li class="list-group-item list-group-item-danger" *ngIf="unitTL && unitTL.tasksKeys && !unitTL.tasksKeys.length">
+    	<strong> No tasks. </strong>
+    	<button class="btn btn-primary-outline"  (click)="askForNewTask()">
+    		<i class="fa fa-plus"></i> Add a task
+    	</button>
+    </li>
+</ul>

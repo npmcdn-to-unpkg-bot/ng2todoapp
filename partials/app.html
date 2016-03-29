@@ -6,48 +6,138 @@
             <input class="btn btn-primary-outline" type="button" (click)="loginWith('google')" value="login using google">
         </form>
         <form class="form-inline pull-xs-right" *ngIf="authData">
-            Welcome, {{authData.google.displayName}}
-            <input class="btn btn-danger-outline" type="button" (click)="logOut()" value="LogOut">
+        <img [src]="authData.google.profileImageURL" alt="user profile image" class="img-circle userProfilePic" title="Welcome, {{authData.google.displayName}}">
+		<div class="btn-group">
+		  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+		  </button>
+		  <div class="dropdown-menu dropdown-menu-right">
+		    <div class="dropdown-item clickable" (click)="addList()"> <i class="fa fa-plus"></i> Create Lists</div>
+		    <div class="dropdown-item clickable" (click)="togglePublicKey()"> <i class="fa fa-magnet"></i> Add Public List</div>
+		    <div class="dropdown-divider"></div>
+		    <div class="dropdown-item clickable" (click)="logOut()"> <i class="fa fa-sign-out"></i> Log Out</div>
+		  </div>
+		</div>            
         </form>    
     </span>
 </nav>
-	<br/>
-<input type=text [(ngModel)]="taskListName" size="30" placeholder="task List Name">
-<input type=text [(ngModel)]="taskListDesc" size="30" placeholder="task List Description">
-<button (click)="addTaskList(1);">Add Private task List</button>
-<button (click)="addTaskList(0);">Add Public task List</button>
-<div class="row">
-	<div class="col-md-6">
-		<div class="row">
-			<div class="col-md-12" *ngIf="getKeys(1).length">
-				<h3>Private Task Lists</h3>
-				<div class="list-group">
-				  <a href class="list-group-item" *ngFor="#todoListIdskey of getKeys(1)">
-				    <h4 class="list-group-item-heading">
-				    	{{privateTaskLists[todoListIdskey].listName}}
-				    </h4>
-				    <p class="list-group-item-text">
-				    	{{privateTaskLists[todoListIdskey].listDesc}}
-				    </p>
-				  </a>
-				</div>
-			</div>
-			<div class="col-md-12" *ngIf="getKeys(0).length">
-				<h3>Public Task Lists</h3>
-				<div class="list-group">
-				  <a href class="list-group-item" *ngFor="#todoListIdskey of getKeys(0)">
-				    <h4 class="list-group-item-heading">
-				    	{{publicTaskLists[todoListIdskey].listName}}
-				    </h4>
-				    <p class="list-group-item-text">
-				    	{{publicTaskLists[todoListIdskey].listDesc}}
-				    </p>
-				  </a>
-				</div>
+
+
+<div class="container">
+<div *ngIf="!authData">
+	<div class="jumbotron">
+	  <h1 class="display-3">Angular2 + Firebase : ToDo App</h1>
+	  <p class="lead">
+	  	A todo app which can be accessed anywhere. A web based app with Firebase as its backend.
+	  </p>
+	  <hr class="m-y-2">
+	  <p>
+	  It uses the latest technologies/framework. Angular 2 (Beta 0.12), Bootstrap (alpha-0.2), TypeScript, Sass/Scss, Jquery, Firebase
+	  </p>
+	  <p class="lead">
+	    <button class="btn btn-primary-outline btn-lg" role="button" (click)="loginWith('google')">Login to Explore</button>
+	  </p>
+	</div>
+</div>
+<div *ngIf="authData">
+	<div>
+		<br>
+		<h3 class="alert" role="alert" *ngIf="getKeys(1).length">
+		  <strong>Private Tasks</strong> 
+		  <button type="button" class="btn btn-success-outline pull-xs-right" data-toggle="tooltip" data-placement="bottom" (click)="addList()" title="Add a task list">
+		  	<i class="fa fa-plus"></i>
+		  </button>
+		</h3>
+		<div class="card-columns" > 
+			<div *ngFor="#lkey of getKeys(1)" class="card taskList">
+				<task-list [unitTL]="privateTaskLists[lkey]" (editTL)="editTL($event)"></task-list>
 			</div>
 		</div>
+		<div class="alert alert-danger" role="alert" *ngIf="!getKeys(1).length">
+		  <strong>No Private List.</strong> 
+		  <button type="button" class="btn btn-success-outline pull-xs-right" data-toggle="tooltip" data-placement="bottom" (click)="addList()" title="Create a task list">
+		  		<i class="fa fa-plus"></i>
+		  </button>
+		</div>
 	</div>
-	<div class="col-md-6">
-		
-	</div>
+	<div>
+		<br>
+		<h3  role="alert" class="alert" *ngIf="getKeys(0).length">
+		  <strong>Public Tasks</strong> 
+		  <button type="button" class="btn btn-success-outline pull-xs-right" data-toggle="tooltip" data-placement="bottom" (click)="addList()" title="Create a task list">
+		  		<i class="fa fa-plus"></i>
+		  </button>
+		  <button type="button" class="btn btn-success-outline pull-xs-right" data-toggle="tooltip" data-placement="bottom" (click)="togglePublicKey();" title="Add a Public task list">
+		  		<i class="fa fa-magnet"></i>
+		  </button>
+		</h3>
+
+		<div class="alert alert-info" id="addPublicKeyContainer">
+			<form>
+				<div class="input-group">
+			      <input type="text" [(ngModel)]="publicKeytoAdd" required class="form-control" placeholder="Enter task list key.. received by you">
+			      <span class="input-group-btn">
+			        <button type="submit" class="btn btn-success-outline" (click)="addPTLtoCollection()">
+			        	<i class="fa fa-check"></i>
+			        </button>
+			      </span>
+			      <span class="input-group-btn">
+			        <button type="button" class="btn btn-danger-outline" (click)="togglePublicKey();">
+						<i class="fa fa-times"></i>
+			        </button>
+			      </span>
+			    </div>
+			</form>
+		</div>
+		<div class="card-columns" >
+			<div *ngFor="#lkey of getKeys(0)" class="card taskList">
+				<h4 class="card-header">Public <i (click)="showShareId(lkey)" class="fa fa-share-alt pull-xs-right shareBtn"></i></h4>
+				<task-list [unitTL]="publicTaskLists[lkey]" (editTL)="editTL($event)" ></task-list>
+			</div>
+		</div>
+		<div class="alert alert-danger" role="alert" *ngIf="!getKeys(0).length">
+		  <strong>No Public List.</strong> 
+		  <button type="button" class="btn btn-success-outline pull-xs-right" data-toggle="tooltip" data-placement="bottom" (click)="addList()" title="Create a task list">
+		  		<i class="fa fa-plus"></i>
+		  </button>
+		  <button type="button" class="btn btn-success-outline pull-xs-right" data-toggle="tooltip" data-placement="bottom" (click)="togglePublicKey();" title="Add a Public task list">
+		  		<i class="fa fa-magnet"></i>
+		  </button>
+		</div>		
+	</div>	
+</div>
+</div>
+
+<div class="modal fade" id="addNewTaskList">
+  <add-task-list></add-task-list>
+</div><!-- /.modal -->
+<div class="modal fade" id="EditTaskList">
+  <edit-task-list [mtl]="taskListEdit.taskList" (doneEdit)="doneEditing()" ></edit-task-list>
+</div><!-- /.modal -->
+
+
+
+
+<div class="modal fade" id="publicKeyShare" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Public List Sharing</h4>
+      </div>
+      <div class="modal-body">
+        <h3 class="pkeydisp">{{publicKeytoAdd}}</h3>
+        <p>Share the above key with your friend, And keep track of collabrative task list</p>
+        <ul>
+        	<li>Share with your friend</li>
+        	<li>Ask him/her to log in</li>
+        	<li>Select 'Add public list' from drop-down menu besides user's profile image</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,0 +1,44 @@
+
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="dismiss(false)" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" >{{getTitle()}}</h4>
+      </div>
+      <div class="modal-body">
+		<form name="manageTL" *ngIf="mtl">
+			<fieldset class="form-group">
+				<label for="mtlTitle">Title</label>
+				<input id="mtlTitle" type="text" placeholder="Enter the title here" class="form-control" [(ngModel)]="mtl.listName" required="true" minlength="5">
+				<small class="text-muted">Apears on the top of the list</small>
+			</fieldset>
+			<fieldset class="form-group">
+			    <label for="mtlDesc">Description</label>
+			    <textarea class="form-control" placeholder="Short description for the task list" id="mtlDesc" rows="3" required [(ngModel)]="mtl.listDesc" ></textarea>
+			</fieldset>
+			<fieldset class="form-group" *ngIf="mode==1">
+			 	<label >Type of List</label>
+			 	<div>
+				 	<label class="c-input c-radio">
+					  <input id="radio1" name="radio" (change)="changeHandler(1);"  type="radio" value=1 checked="true">
+					  <span class="c-indicator"></span>
+					  Private Task List
+					</label>
+					<label class="c-input c-radio">
+					  <input id="radio2" name="radio" (change)="changeHandler(0);"  type="radio" value=0 >
+					  <span class="c-indicator"></span>
+					  Public Task List
+					</label>
+			 	</div>
+
+			</fieldset>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="dismiss(false)">Close</button>
+        <button type="submit" class="btn btn-primary" (click)="saveTaskList();">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->

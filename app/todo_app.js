@@ -1,4 +1,4 @@
-System.register(['angular2/core', './todo_utility', './app_interfaces'], function(exports_1, context_1) {
+System.register(['angular2/core', './todo_utility', './app_interfaces', './add_task_list', './edit_task_list', './task_list'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', './todo_utility', './app_interfaces'], functio
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, todo_utility_1, core_2, app_interfaces_1;
+    var core_1, todo_utility_1, core_2, app_interfaces_1, add_task_list_1, edit_task_list_1, task_list_1;
     var App;
     return {
         setters:[
@@ -23,6 +23,15 @@ System.register(['angular2/core', './todo_utility', './app_interfaces'], functio
             },
             function (app_interfaces_1_1) {
                 app_interfaces_1 = app_interfaces_1_1;
+            },
+            function (add_task_list_1_1) {
+                add_task_list_1 = add_task_list_1_1;
+            },
+            function (edit_task_list_1_1) {
+                edit_task_list_1 = edit_task_list_1_1;
+            },
+            function (task_list_1_1) {
+                task_list_1 = task_list_1_1;
             }],
         execute: function() {
             core_2.enableProdMode();
@@ -30,11 +39,58 @@ System.register(['angular2/core', './todo_utility', './app_interfaces'], functio
                 function App() {
                     var _this = this;
                     this.appRef = new Firebase('https://ng2todoapp.firebaseio.com');
-                    this.taskListName = "";
-                    this.taskListDesc = "";
+                    this.taskListEdit = {
+                        active: false,
+                        taskList: undefined
+                    };
+                    this.isRefreshActive = false;
                     this.appRef.onAuth(function (updatedAuthData) { _this.authDataHandler(updatedAuthData); });
+                    this.autoRefresh(1000);
                 }
+                App.prototype.autoRefresh = function (ms) {
+                    var _this = this;
+                    if (!this.isRefreshActive) {
+                        this.isRefreshActive = true;
+                        setTimeout(function () {
+                            _this.isRefreshActive = false;
+                            _this.autoRefresh(ms);
+                        }, ms);
+                    }
+                };
+                App.prototype.togglePublicKey = function () {
+                    var _this = this;
+                    $("#addPublicKeyContainer").slideToggle(400, 'swing', function () {
+                        _this.publicKeytoAdd = "";
+                    });
+                };
+                App.prototype.addPTLtoCollection = function () {
+                    if (this.publicKeytoAdd) {
+                        this.appUtil.addPublicListToCollection(this.publicKeytoAdd);
+                        this.togglePublicKey();
+                    }
+                };
+                App.prototype.addList = function () {
+                    $("#addNewTaskList").modal("show");
+                };
                 //Related to retrival and display
+                App.prototype.editTL = function (tl) {
+                    this.taskListEdit.taskList = tl;
+                    this.taskListEdit.active = true;
+                    $("#EditTaskList").modal("show");
+                };
+                App.prototype.showShareId = function (key) {
+                    this.publicKeytoAdd = key;
+                    $('#publicKeyShare').modal('show');
+                };
+                App.prototype.hideShareID = function () {
+                    this.publicKeytoAdd = "";
+                    $('#publicKeyShare').modal('hide');
+                };
+                App.prototype.doneEditing = function (status) {
+                    this.taskListEdit.taskList = undefined;
+                    this.taskListEdit.active = false;
+                    $("#EditTaskList").modal("hide");
+                };
                 App.prototype.getKeys = function (reqListType) {
                     if (reqListType == app_interfaces_1.listType.public) {
                         if (this.publicTaskLists) {
@@ -50,20 +106,6 @@ System.register(['angular2/core', './todo_utility', './app_interfaces'], functio
                     }
                     return [];
                 };
-                //Functions Related to main app
-                App.prototype.addTaskList = function (reqType) {
-                    if (reqType === 1)
-                        reqType = app_interfaces_1.listType.private; //1=private, 0 public
-                    else
-                        reqType = app_interfaces_1.listType.public;
-                    this.taskListName = this.taskListName.trim();
-                    this.taskListDesc = this.taskListDesc.trim();
-                    if (this.taskListName.length > 0 && this.taskListDesc.length > 0) {
-                        this.appUtil.addTaskList(reqType, this.taskListName, this.taskListDesc);
-                        this.taskListName = "";
-                        this.taskListDesc = "";
-                    }
-                };
                 //Login Related Functions
                 App.prototype.authDataHandler = function (authData) {
                     this.authData = authData;
@@ -74,9 +116,8 @@ System.register(['angular2/core', './todo_utility', './app_interfaces'], functio
                             this.privateTaskLists = {};
                         if (!this.publicTaskLists)
                             this.publicTaskLists = {};
-                        this.appUtil.populateLists(this.privateTaskLists, app_interfaces_1.listType.private);
-                        this.appUtil.populateLists(this.publicTaskLists, app_interfaces_1.listType.public);
-                        console.log(authData);
+                        this.appUtil.populateLists(this.privateTaskLists, app_interfaces_1.listType.private)();
+                        this.appUtil.populateLists(this.publicTaskLists, app_interfaces_1.listType.public)();
                     }
                     else {
                         this.userRef = undefined;
@@ -100,7 +141,8 @@ System.register(['angular2/core', './todo_utility', './app_interfaces'], functio
                 App = __decorate([
                     core_1.Component({
                         selector: 'todo-app',
-                        templateUrl: './partials/app.html'
+                        templateUrl: './partials/app.html',
+                        directives: [add_task_list_1.AddTaskList, edit_task_list_1.EditTaskList, task_list_1.TaskList]
                     }), 
                     __metadata('design:paramtypes', [])
                 ], App);

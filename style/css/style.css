@@ -2,4 +2,98 @@ body {
   font-family: Helvetica, sans-serif;
   color: #333; }
 
+.clickable {
+  cursor: pointer;
+  color: #333;
+  background-color: #FFF;
+  -moz-transition: background-color 0.4s, color 0.4s;
+  -o-transition: background-color 0.4s, color 0.4s;
+  -webkit-transition: background-color 0.4s, color 0.4s;
+  transition: background-color 0.4s, color 0.4s; }
+
+.clickable:hover {
+  color: #FFF;
+  background-color: #333;
+  -moz-transition: background-color 0.4s, color 0.4s;
+  -o-transition: background-color 0.4s, color 0.4s;
+  -webkit-transition: background-color 0.4s, color 0.4s;
+  transition: background-color 0.4s, color 0.4s; }
+
+.shareBtn {
+  color: #888;
+  cursor: pointer;
+  -moz-transition: background-color 0.4s, color 0.4s;
+  -o-transition: background-color 0.4s, color 0.4s;
+  -webkit-transition: background-color 0.4s, color 0.4s;
+  transition: background-color 0.4s, color 0.4s; }
+
+.shareBtn:hover {
+  color: #333;
+  -moz-transition: background-color 0.4s, color 0.4s;
+  -o-transition: background-color 0.4s, color 0.4s;
+  -webkit-transition: background-color 0.4s, color 0.4s;
+  transition: background-color 0.4s, color 0.4s; }
+
+.pkeydisp {
+  font-family: monospace; }
+
+.userProfilePic {
+  height: 2.5rem;
+  width: auto; }
+
+/*For adding public keys*/
+#addPublicKeyContainer {
+  display: none; }
+
+/*For adjusting checkbox regeion*/
+li[id^="addtask"] {
+  display: none;
+  list-style-type: none; }
+
+.taskRow, .customtodoCheck .c-input.c-checkbox, .taskbtnContainer {
+  display: inline-block;
+  margin-bottom: 0px;
+  padding: .75rem 1.25rem; }
+
+.customtodoCheck > .list-group-item {
+  padding: 0px;
+  position: relative; }
+
+.customtodoCheck .c-input.c-checkbox {
+  width: 100%; }
+
+.customtodoCheck .c-indicator {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle; }
+
+.customtodoCheck .c-text {
+  display: inline-block;
+  vertical-align: middle;
+  padding-left: .5rem; }
+
+/*Task buttons*/
+.taskbtnContainer {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1; }
+
+.taskbtn {
+  padding: 0px 7px;
+  color: #888; }
+
+.taskbtn:hover {
+  color: #222; }
+
+.customtodoCheck > li:hover > .taskbtnContainer {
+  visibility: visible; }
+
+/**/
+.card.taskList {
+  min-height: 200px;
+  box-shadow: 2px 2px 5px #888888;
+  margin: 5px; }
+
 /*# sourceMappingURL=style.css.map */
